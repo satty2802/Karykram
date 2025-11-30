@@ -22,6 +22,10 @@ const eventSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please specify the organizing club or committee"],
     },
+    price: {
+      type: Number,
+      default: 0,
+    },
     members: [
       {
         name: String,
@@ -37,7 +41,8 @@ const eventSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-     imageUrl: { type: String },
+    imageUrl: { type: String },
+    imagePublicId: { type: String },
   },
   { timestamps: true }
 );

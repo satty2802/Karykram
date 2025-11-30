@@ -11,6 +11,7 @@ const CreateEvent = () => {
     location: "",
     club: "",
     isPublished: false,
+    price: 0,
   });
   const [poster, setPoster] = useState(null);
 
@@ -28,6 +29,7 @@ const CreateEvent = () => {
     form.append("location", formData.location || "TBD");
     form.append("club", formData.club || "General");
     form.append("isPublished", formData.isPublished);
+    form.append("price", formData.price);
     if (poster) form.append("image", poster);
 
     const res = await dispatch(createEvent(form));
@@ -133,6 +135,25 @@ const CreateEvent = () => {
               </div>
             </div>
 
+            {/* Price */}
+            <div>
+              <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+                Ticket Price (INR)
+              </label>
+              <div className="mt-1">
+                <input
+                  id="price"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring var(--gbu-light-blue) focus:border var(--gbu-light-blue) sm:text-sm"
+                  placeholder="0"
+                  value={formData.price}
+                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                />
+              </div>
+            </div>
+
             {/* Poster */}
             <div>
               <label htmlFor="poster" className="block text-sm font-medium text-gray-700">
@@ -173,8 +194,8 @@ const CreateEvent = () => {
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                   loading
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                    : "bg-purple-800 hover:bg-purple-900"
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-700`}
               >
                 {loading ? "Creating..." : "Create Event"}
               </button>

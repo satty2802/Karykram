@@ -14,11 +14,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gray-800 text-white shadow-lg">
+    <nav className="gbu-navbar text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to={user ? "/home" : "/"} className="text-2xl font-bold">
-            GbuConnect
+          <Link to={user ? "/home" : "/"} className="flex items-center text-2xl font-bold">
+          <img src="/logo1.png" alt="Gautam Buddha University seal" className="nav-logo bg-transparent rounded-2xl" />
+            <img src="/log4.png" alt="Gautam Buddha University seal" className="nav-logo1" />
+            
           </Link>
           <div className="flex items-center space-x-4">
             {user ? (
@@ -27,13 +29,13 @@ const Navbar = () => {
                   <>
                     <Link
                       to="/admin"
-                      className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                      className="text-gray-100 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     >
                       Dashboard
                     </Link>
                     <Link
                       to="/create-event"
-                      className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                      className="text-gray-100 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     >
                       Create Event
                     </Link>
@@ -41,10 +43,18 @@ const Navbar = () => {
                 )}
                 <Link
                   to="/home"
-                  className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  className="text-gray-100 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   My Events
                 </Link>
+                {user.role !== "admin" && (
+                  <Link
+                    to="/my-tickets"
+                    className="text-gray-100 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    My Tickets
+                  </Link>
+                )}
                 <button
                   onClick={handleLogout}
                   className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
@@ -55,14 +65,14 @@ const Navbar = () => {
             ) : (
               <>
                 <Link
-                  to="/"
-                  className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  to="/login"
+                  className="text-gray-100 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  className="gbu-btn-primary "
                 >
                   Signup
                 </Link>

@@ -6,6 +6,8 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import ticketRoutes from "./routes/ticketRoutes.js";
 
 // ensure .env in src is loaded regardless of working directory
 const __filename = fileURLToPath(import.meta.url);
@@ -39,6 +41,8 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/payments", paymentRoutes);
+app.use("/api/tickets", ticketRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -49,5 +53,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+// default port set to 5001 to match frontend axios baseURL
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

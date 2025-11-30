@@ -21,8 +21,9 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // 3️⃣ Create user
-    const user = await User.create({ name, email, password, role });
+    // 3️⃣ Create user - always create as 'student' from public signup
+    const userRole = 'student';
+    const user = await User.create({ name, email, password, role: userRole });
 
     // 4️⃣ Return response with token
     if (user) {

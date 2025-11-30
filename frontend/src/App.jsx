@@ -9,6 +9,7 @@ import Signup from "./pages/SignUp";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
 import CreateEvent from "./pages/CreateEvent";
+import MyTickets from "./pages/MyTickets";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -27,35 +28,11 @@ const App = () => {
       <Navbar />
 
       <Routes>
-        {/* Public Routes - Redirect if authenticated */}
-        <Route
-          path="/"
-          element={
-            user ? (
-              user.role === "admin" ? (
-                <Navigate to="/admin" replace />
-              ) : (
-                <Navigate to="/home" replace />
-              )
-            ) : (
-              <Login />
-            )
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            user ? (
-              user.role === "admin" ? (
-                <Navigate to="/admin" replace />
-              ) : (
-                <Navigate to="/home" replace />
-              )
-            ) : (
-              <Signup />
-            )
-          }
-        />
+        {/* Public Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+
 
         {/* Protected Routes - Only for authenticated users */}
         <Route
@@ -63,6 +40,14 @@ const App = () => {
           element={
             <ProtectedRoute allowedRoles={["student", "admin"]}>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-tickets"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <MyTickets />
             </ProtectedRoute>
           }
         />

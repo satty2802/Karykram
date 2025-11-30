@@ -1,90 +1,153 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-const EventCard = ({ event, onRegister, onDelete }) => {
+const EventCard = ({ event, onRegister, onDelete, onPublish, isRegistering = false, isBooked = false }) => {
   const { user } = useSelector((state) => state.auth);
+  const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef();
+
+  const imageSrc = event.imageUrl || event.image || null;
+  const venue = event.location || event.venue || 'TBD';
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') setShowModal(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const openModal = () => setShowModal(true);
+  const closeModal = () => setShowModal(false);
+
+  const onOverlayClick = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) closeModal();
+  };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-      {event.image && (
-        <img
-          src={event.image}
-          alt={event.title}
-          className="w-full h-48 object-cover"
-        />
-      )}
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-2">{event.title}</h3>
-        <p className="text-gray-600 mb-4">{event.description}</p>
-        
-        <div className="flex flex-col space-y-2">
-          <div className="flex items-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <span>{new Date(event.date).toLocaleDateString()}</span>
-          </div>
-          
-          <div className="flex items-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <span>{event.venue}</span>
-          </div>
-        </div>
+    <>
+      <div
+        className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+        onClick={openModal}
+        role="button"
+        tabIndex={0}
+        onKeyPress={(e) => { if (e.key === 'Enter') openModal(); }}
+      >
+        {imageSrc && (
+          <img
+            src={imageSrc}
+            alt={event.title}
+            className="w-full h-48 object-cover"
+          />
+        )}
+        <div className="p-6">
+          <h3 className="text-lg font-semibold gbu-heading mb-1 truncate">{event.title}</h3>
+          <p className="text-sm text-gray-600 truncate">{event.description}</p>
 
-        <div className="mt-6 flex justify-between items-center">
-          <div className="flex gap-2">
-            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-              event.isPublished 
-                ? 'bg-green-100 text-green-800'
-                : 'bg-yellow-100 text-yellow-800'
-            }`}>
-              {event.isPublished ? 'Published' : 'Draft'}
-            </span>
-            
-            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-              new Date(event.date) > new Date()
-                ? 'bg-blue-100 text-blue-800'
-                : 'bg-gray-100 text-gray-800'
-            }`}>
-              {new Date(event.date) > new Date() ? 'Upcoming' : 'Past'}
-            </span>
-          </div>
-          
-          <div className="space-x-2">
-            {user?.role === 'admin' && (
-              <>
-                <button
-                  onClick={() => onDelete && onDelete(event._id)}
-                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm font-medium"
-                >
-                  Delete
-                </button>
-                {!event.isPublished && (
-                  <button
-                    onClick={() => onPublish && onPublish(event._id)}
-                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-medium"
-                  >
-                    Publish
-                  </button>
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex gap-2 items-center">
+              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                event.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+              }`}>
+                {event.isPublished ? 'Published' : 'Draft'}
+              </span>
+              <span className="text-xs text-gray-500">{new Date(event.date).toLocaleDateString()}</span>
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+                {event.price && Number(event.price) > 0 ? `₹${Number(event.price).toFixed(2)}` : 'Free'}
+              </span>
+            </div>
+
+            <div>
+              {user?.role === 'student' && new Date(event.date) > new Date() && (
+                  isBooked ? (
+                    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-50 text-blue-800">Booked</span>
+                  ) : (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); onRegister && onRegister(event._id); }}
+                      className={`gbu-btn-primary text-sm ${isRegistering ? 'opacity-70 cursor-not-allowed' : ''}`}
+                      disabled={isRegistering}
+                    >
+                      {isRegistering ? 'Registering...' : 'Register'}
+                    </button>
+                  )
                 )}
-              </>
-            )}
-            
-            {user?.role === 'student' && new Date(event.date) > new Date() && (
-              <button
-                onClick={() => onRegister && onRegister(event._id)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm font-medium"
-              >
-                Register
-              </button>
-            )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {showModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+          onClick={onOverlayClick}
+        >
+          <div ref={modalRef} className="bg-white rounded-lg max-w-3xl w-full overflow-hidden shadow-xl">
+            {imageSrc && (
+              <img src={imageSrc} alt={event.title} className="w-full h-72 object-cover" />
+            )}
+            <div className="p-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="text-2xl font-bold gbu-heading">{event.title}</h3>
+                  <p className="text-sm text-gray-600 mt-1">{venue} • {new Date(event.date).toLocaleString()}</p>
+                </div>
+                <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">✕</button>
+              </div>
+
+              {/* If user is not authenticated show limited info and prompt to login/signup */}
+              {!user ? (
+                <>
+                  <p className="mt-4 text-gray-700 line-clamp-3">{event.description}</p>
+                  <div className="mt-6 flex items-center justify-end gap-3">
+                    <a href="/login" className="gbu-btn-primary px-4 py-2">Login to Register</a>
+                    <a href="/signup" className="border px-4 py-2 rounded-md text-sm">Create Account</a>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="mt-4 text-gray-700">{event.description}</p>
+
+                  <div className="mt-6 flex items-center justify-end gap-3">
+                    {user?.role === 'admin' && (
+                      <>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); if (window.confirm('Delete this event?')) onDelete && onDelete(event._id); }}
+                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                        >
+                          Delete
+                        </button>
+                        {!event.isPublished && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); onPublish && onPublish(event._id); }}
+                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                          >
+                            Publish
+                          </button>
+                        )}
+                      </>
+                    )}
+
+                    {user?.role === 'student' && new Date(event.date) > new Date() && (
+                      isBooked ? (
+                        <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-50 text-blue-800">Booked</span>
+                      ) : (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); onRegister && onRegister(event._id); closeModal(); }}
+                          className={`gbu-btn-primary px-4 py-2 text-sm ${isRegistering ? 'opacity-70 cursor-not-allowed' : ''}`}
+                          disabled={isRegistering}
+                        >
+                          {isRegistering ? 'Processing...' : 'Register & Pay'}
+                        </button>
+                      )
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
