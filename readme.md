@@ -8,6 +8,23 @@
 - `backend/` — Express API, Mongoose models, payment and ticket controllers.
 - `frontend/` — React + Vite app, Redux Toolkit slices, components and pages.
 
+**Project Screenshots**:
+- `payment/` — <img src="./asset/Screenshot 2025-11-29 014248.png">
+- `Home page/` — <img src="./asset/Screenshot 2025-11-29 014325.png">
+
+**Prerequisites**
+- Node.js 18+ (or latest LTS)
+- npm (or yarn)
+**Project**: Karykrm — GBU Events (Event_Planner)
+
+**Overview**:
+- Full-stack event management app (Node/Express + MongoDB backend, React + Redux frontend).
+- Features: user auth (JWT), admin event management, Cloudinary poster uploads, Razorpay payment integration, ticketing with unique ticket pass codes and QR downloads.
+
+**Repository layout**:
+- `backend/` — Express API, Mongoose models, payment and ticket controllers.
+- `frontend/` — React + Vite app, Redux Toolkit slices, components and pages.
+
 **Prerequisites**
 - Node.js 18+ (or latest LTS)
 - npm (or yarn)
@@ -96,5 +113,14 @@ node src/seedAdmin.js
 **License**
 - Add a license file if you intend to open-source this project (e.g., `MIT`).
 
-<img src="./asset/Screenshot 2025-11-29 014248.png">
-<img src="./asset/Screenshot 2025-11-29 014325.png">
+**Included images**
+- `asset/Screenshot 2025-11-29 014248.png` — login page screenshot
+- `asset/Screenshot 2025-11-29 014325.png` — signup page screenshot
+
+**Push to GitHub**
+When you're ready to push these final changes to your remote repository, run:
+
+Notes:
+- Make sure your `.gitignore` excludes `.env`.
+- If you use a different branch name, replace `main` with your branch.
+
